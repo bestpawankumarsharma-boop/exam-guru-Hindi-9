@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#173c70">
+<title>Exam Guru Hindi</title>
+<link rel="manifest" href="manifest.json">
+<style>
+:root{--blue:#173c70;--light:#eef4ff;--ink:#172033;--muted:#65718a;--green:#16834a}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Noto Sans Devanagari",sans-serif;background:#f4f6fb;color:var(--ink)}
+header{background:linear-gradient(135deg,#173c70,#2862a6);color:white;padding:22px 18px 26px;border-radius:0 0 24px 24px}
+header h1{margin:0;font-size:25px}header p{margin:7px 0 0;color:#e2edff;font-size:14px}
+main{max-width:720px;margin:auto;padding:16px}
+.toolbar{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-bottom:14px}
+select,.btn{border:1px solid #d5ddeb;border-radius:12px;padding:10px 12px;background:white;font:inherit}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.card{background:white;border:1px solid #e4e9f2;border-radius:17px;padding:16px;box-shadow:0 3px 12px #1d35570a}
+.subject{cursor:pointer;text-align:left;color:inherit;width:100%;font:inherit}
+.subject strong{display:block;font-size:17px;margin:8px 0 4px}.muted{color:var(--muted);font-size:13px}
+.icon{font-size:25px}.section{margin:18px 0 10px;font-size:18px}
+button{cursor:pointer}.primary{background:var(--blue);color:white;border:0;border-radius:12px;padding:12px 16px;font:inherit;font-weight:650}
+.secondary{background:#edf2fa;color:var(--blue);border:0;border-radius:12px;padding:11px 14px;font:inherit}
+.question{font-size:19px;line-height:1.55;font-weight:700;margin:12px 0 18px}
+.option{display:block;width:100%;text-align:left;margin:9px 0;padding:13px;border:1px solid #dce3ef;background:white;border-radius:12px;font:inherit}
+.option.selected{border:2px solid var(--blue);background:var(--light)}
+.option.correct{border:2px solid var(--green);background:#edfff4}
+.option.wrong{border:2px solid #c43b45;background:#fff1f1}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.hidden{display:none!important}
+footer{text-align:center;color:var(--muted);font-size:12px;padding:24px}
+@media(max-width:430px){.grid{grid-template-columns:1fr 1fr}header h1{font-size:22px}.card{padding:13px}}
+</style>
+</head>
+<body>
+<header><h1>🎓 Exam Guru Hindi</h1><p id="tagline">आपकी सफलता, हमारी तैयारी! · Your success, our preparation</p></header>
+<main>
+<div class="toolbar">
+  <span class="muted" id="welcome">आज की तैयारी शुरू करें</span>
+  <select id="language" aria-label="Language"><option value="hi">हिंदी</option><option value="en">English</option></select>
+</div>
+<section id="home">
+  <div class="card"><strong id="dailyTitle">आज का अभ्यास</strong><p class="muted" id="dailyText">विषय चुनें और छोटा टेस्ट दें। हर उत्तर के बाद explanation मिलेगा।</p><div class="row"><span class="muted" id="attempts">टेस्ट पूरे: 0</span><span class="muted" id="best">सर्वश्रेष्ठ स्कोर: 0%</span></div></div>
+  <h2 class="section" id="chooseTitle">विषय चुनें / Choose a subject</h2>
+  <div class="grid" id="subjects"></div>
+  <h2 class="section" id="historyTitle">हाल के टेस्ट</h2><div id="history" class="card muted">अभी कोई टेस्ट नहीं हुआ।</div>
+</section>
+<section id="test" class="hidden">
+  <div class="row" style="justify-content:space-between"><button class="secondary" id="back">← <span id="backText">वापस</span></button><span class="muted" id="progress">1 / 5</span></div>
+  <div class="card" style="margin-top:14px">
+    <div class="muted" id="subjectLabel"></div><div class="question" id="question"></div><div id="options"></div>
+    <div id="explanation" class="card hidden" style="margin-top:14px;background:#f2f8ff"></div>
+    <div class="row" style="margin-top:15px"><button class="primary" id="check">उत्तर जाँचें</button><button class="primary hidden" id="next">अगला प्रश्न →</button></div>
+  </div>
+</section>
+<section id="result" class="hidden">
+  <div class="card"><h2 id="resultTitle">टेस्ट पूरा हुआ!</h2><div class="question" id="resultScore"></div><p id="resultMessage" class="muted"></p><button class="primary" id="again">होम पर जाएँ</button></div>
+</section>
+</main>
+<footer>Exam Guru Hindi · शुरुआती मुफ्त संस्करण · Practice responsibly</footer>
+<script>
+const data={
+  "Maths":[
+    ["800 का 25% कितना है?","What is 25% of 800?",["100","150","200","250"],2,"800 × 25 ÷ 100 = 200."],
+    ["यदि किसी वस्तु का क्रय मूल्य ₹400 और विक्रय मूल्य ₹500 है, लाभ प्रतिशत कितना है?","An item costs ₹400 and sells for ₹500. What is the profit percentage?",["20%","25%","30%","40%"],1,"लाभ = 100; लाभ% = 100/400 × 100 = 25%."],
+    ["12 और 18 का LCM क्या है?","What is the LCM of 12 and 18?",["24","30","36","48"],2,"12 और 18 का लघुत्तम समापवर्त्य 36 है."],
+    ["एक संख्या का 1/5 भाग 15 है। संख्या क्या है?","One-fifth of a number is 15. Find the number.",["50","60","75","90"],2,"संख्या = 15 × 5 = 75."],
+    ["2, 4, 6, 8 का औसत क्या है?","What is the average of 2, 4, 6, 8?",["4","5","6","7"],1,"औसत = (2+4+6+8) ÷ 4 = 5."]
+  ],
+  "Reasoning":[
+    ["A, B की बहन है। B, C का बेटा है। A का C से क्या संबंध है?","A is B's sister. B is C's son. How is A related to C?",["पुत्री / Daughter","माता / Mother","बहन / Sister","पत्नी / Wife"],0,"B, C का बेटा है और A उसकी बहन है, इसलिए A, C की पुत्री है."],
+    ["श्रृंखला पूरी करें: 2, 4, 8, 16, ?","Complete the series: 2, 4, 8, 16, ?",["20","24","30","32"],3,"हर बार संख्या दोगुनी हो रही है. अगली संख्या 32 है."],
+    ["यदि CAT को DBU लिखा जाए, तो DOG कैसे लिखा जाएगा?","If CAT is coded as DBU, how is DOG coded?",["EPH","EOG","CNG","FPH"],0,"हर अक्षर के बाद वाला अक्षर लिया गया है: D→E, O→P, G→H."],
+    ["इनमें अलग कौन है: सेब, आम, गाजर, केला?","Which is different: apple, mango, carrot, banana?",["सेब / Apple","आम / Mango","गाजर / Carrot","केला / Banana"],2,"गाजर सब्जी है, बाकी फल हैं."],
+    ["उत्तर की ओर मुँह करके दाएँ मुड़ें। अब किस दिशा में हैं?","Facing north, turn right. Which direction are you facing?",["पश्चिम / West","पूर्व / East","दक्षिण / South","उत्तर / North"],1,"उत्तर से दाएँ मुड़ने पर पूर्व दिशा होती है."]
+  ],
+  "GK":[
+    ["भारत का संविधान कब लागू हुआ?","When did the Constitution of India come into effect?",["15 अगस्त 1947","26 जनवरी 1950","26 नवंबर 1949","2 अक्टूबर 1950"],1,"संविधान 26 जनवरी 1950 को लागू हुआ."],
+    ["भारत की राजधानी क्या है?","What is the capital of India?",["मुंबई / Mumbai","कोलकाता / Kolkata","नई दिल्ली / New Delhi","चेन्नई / Chennai"],2,"भारत की राजधानी नई दिल्ली है."],
+    ["भारत का राष्ट्रीय पशु कौन है?","What is the national animal of India?",["शेर / Lion","बाघ / Tiger","हाथी / Elephant","मोर / Peacock"],1,"भारत का राष्ट्रीय पशु बाघ है."],
+    ["लोकसभा का सामान्य कार्यकाल कितना है?","What is the normal term of the Lok Sabha?",["4 वर्ष / years","5 वर्ष / years","6 वर्ष / years","7 वर्ष / years"],1,"लोकसभा का सामान्य कार्यकाल 5 वर्ष है."],
+    ["भारतीय रिजर्व बैंक की स्थापना किस वर्ष हुई?","In which year was the Reserve Bank of India established?",["1935","1947","1950","1955"],0,"RBI की स्थापना 1 अप्रैल 1935 को हुई."]
+  ],
+  "DSSSB / SSC":[
+    ["भारत में मतदान की न्यूनतम आयु कितनी है?","What is the minimum voting age in India?",["16 वर्ष / years","18 वर्ष / years","21 वर्ष / years","25 वर्ष / years"],1,"भारत में मतदान की न्यूनतम आयु 18 वर्ष है."],
+    ["भारतीय संसद के कितने सदन हैं?","How many houses does the Indian Parliament have?",["एक / One","दो / Two","तीन / Three","चार / Four"],1,"भारतीय संसद के दो सदन हैं: लोकसभा और राज्यसभा."],
+    ["भारत के प्रथम राष्ट्रपति कौन थे?","Who was the first President of India?",["डॉ. राजेंद्र प्रसाद","डॉ. एस. राधाकृष्णन","जवाहरलाल नेहरू","सरदार पटेल"],0,"डॉ. राजेंद्र प्रसाद भारत के प्रथम राष्ट्रपति थे."],
+    ["श्रृंखला में अगली संख्या: 5, 10, 20, 40, ?","Next number: 5, 10, 20, 40, ?",["45","60","80","100"],2,"हर संख्या पिछली संख्या की दोगुनी है. उत्तर 80 है."],
+    ["एक घंटे में कितने मिनट होते हैं?","How many minutes are there in one hour?",["30","45","60","100"],2,"एक घंटे में 60 मिनट होते हैं."]
+  ]
+};
+const names={hi:["गणित","रीजनिंग","सामान्य ज्ञान","DSSSB / SSC"],en:["Maths","Reasoning","General Knowledge","DSSSB / SSC"]};
+const desc={hi:["प्रतिशत, औसत, ब्याज","तर्कशक्ति और श्रृंखला","Static GK अभ्यास","परीक्षा उपयोगी प्रश्न"],en:["Percentage, average, interest","Logic and series","Static GK practice","Exam-focused questions"]};
+const keys=Object.keys(data), icons=["➗","🧠","🌍","📚"];
+let lang="hi",subject="",idx=0,selected=-1,score=0,locked=false;
+const $=id=>document.getElementById(id);
+function t(hi,en){return lang==="hi"?hi:en}
+function renderHome(){
+  $("home").classList.remove("hidden");$("test").classList.add("hidden");$("result").classList.add("hidden");
+  $("welcome").textContent=t("आज की तैयारी शुरू करें","Start today's practice");
+  $("dailyTitle").textContent=t("आज का अभ्यास","Today's practice");
+  $("dailyText").textContent=t("विषय चुनें और छोटा टेस्ट दें। हर उत्तर के बाद explanation मिलेगा।","Choose a subject and take a short test. Get an explanation after each answer.");
+  $("chooseTitle").textContent=t("विषय चुनें / Choose a subject","Choose a subject");
+  $("historyTitle").textContent=t("हाल के टेस्ट","Recent tests");
+  const history=JSON.parse(localStorage.getItem("eg_history")||"[]");
+  $("attempts").textContent=t("टेस्ट पूरे: ","Tests completed: ")+history.length;
+  $("best").textContent=t("सर्वश्रेष्ठ स्कोर: ","Best score: ")+(history.length?Math.max(...history.map(x=>x.pct)):"0")+"%";
+  $("subjects").innerHTML=keys.map((k,i)=>`<button class="card subject" data-sub="${k}"><span class="icon">${icons[i]}</span><strong>${names[lang][i]}</strong><span class="muted">${desc[lang][i]}</span><p class="muted">5 ${t("प्रश्न","questions")} · ${t("शुरू करें","Start")} →</p></button>`).join("");
+  document.querySelectorAll("[data-sub]").forEach(b=>b.onclick=()=>start(b.dataset.sub));
+  $("history").innerHTML=history.length?history.slice(-5).reverse().map(x=>`<div style="padding:7px 0;border-bottom:1px solid #edf0f5">${x.name} — ${x.pct}%</div>`).join(""):t("अभी कोई टेस्ट नहीं हुआ।","No tests completed yet.");
+}
+function start(s){subject=s;idx=0;score=0;renderQuestion()}
+function renderQuestion(){
+  $("home").classList.add("hidden");$("result").classList.add("hidden");$("test").classList.remove("hidden");
+  const q=data[subject][idx];selected=-1;locked=false;
+  $("subjectLabel").textContent=subject+" · "+(idx+1)+"/5";
+  $("progress").textContent=(idx+1)+" / 5";
+  $("question").textContent=lang==="hi"?q[0]:q[1];
+  $("options").innerHTML=q[2].map((o,i)=>`<button class="option" data-opt="${i}">${"ABCD"[i]}. ${o}</button>`).join("");
+  document.querySelectorAll("[data-opt]").forEach(b=>b.onclick=()=>{if(locked)return;selected=+b.dataset.opt;document.querySelectorAll(".option").forEach(x=>x.classList.remove("selected"));b.classList.add("selected")});
+  $("explanation").classList.add("hidden");$("check").classList.remove("hidden");$("next").classList.add("hidden");
+  $("check").textContent=t("उत्तर जाँचें","Check answer");$("backText").textContent=t("वापस","Back");
+}
+$("check").onclick=()=>{
+ if(selected<0){alert(t("पहले एक विकल्प चुनें।","Please select an option first."));return}
+ locked=true;const q=data[subject][idx],correct=selected===q[3];if(correct)score++;
+ document.querySelectorAll(".option").forEach((b,i)=>{if(i===q[3])b.classList.add("correct");else if(i===selected)b.classList.add("wrong")});
+ $("explanation").classList.remove("hidden");
+ $("explanation").innerHTML=`<strong>${correct?t("सही जवाब!","Correct answer!"):t("सही उत्तर:","Correct answer:")} ${q[2][q[3]]}</strong><p class="muted">${q[4]}</p>`;
+ $("check").classList.add("hidden");$("next").classList.remove("hidden");$("next").textContent=idx===4?t("परिणाम देखें","See result"):t("अगला प्रश्न →","Next question →");
+};
+$("next").onclick=()=>{if(idx<4){idx++;renderQuestion()}else finish()};
+function finish(){
+ const pct=Math.round(score/5*100),hist=JSON.parse(localStorage.getItem("eg_history")||"[]");
+ hist.push({name:subject,pct,date:new Date().toLocaleDateString()});localStorage.setItem("eg_history",JSON.stringify(hist.slice(-30)));
+ $("test").classList.add("hidden");$("result").classList.remove("hidden");
+ $("resultTitle").textContent=t("टेस्ट पूरा हुआ!","Test completed!");
+ $("resultScore").textContent=score+" / 5  ·  "+pct+"%";
+ $("resultMessage").textContent=t("अच्छा प्रयास! नियमित अभ्यास करते रहें।","Good effort! Keep practising regularly.");
+}
+$("back").onclick=renderHome;$("again").onclick=renderHome;
+$("language").onchange=e=>{lang=e.target.value;renderHome()};
+if("serviceWorker"in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("sw.js").catch(()=>{});
+renderHome();
+</script>
+</body></html>

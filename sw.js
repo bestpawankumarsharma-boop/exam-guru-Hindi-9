@@ -1,0 +1,1 @@
+const CACHE='exam-guru-v1';const FILES=['./','./index.html','./manifest.json','./icons/icon-192.svg','./icons/icon-512.svg'];self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES))));self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));
