@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R.S. Aggarwal Quantitative Aptitude - Bilingual Quiz</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --border: #e2e8f0;
+            --correct-bg: #dcfce7;
+            --correct-border: #22c55e;
+            --correct-text: #15803d;
+            --wrong-bg: #fee2e2;
+            --wrong-border: #ef4444;
+            --wrong-text: #b91c1c;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 700px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            border: 1px solid var(--border);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .chapter-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .controls-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .q-counter {
+            font-size: 0.95rem;
+            font-weight: 600;
+            background: #e0e7ff;
+            color: var(--primary);
+            padding: 5px 12px;
+            border-radius: 20px;
+        }
+
+        .lang-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: background 0.2s;
+        }
+
+        .lang-btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .question-box {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .exam-tag {
+            display: inline-block;
+            font-size: 0.8rem;
+            color: #64748b;
+            font-weight: normal;
+            margin-left: 8px;
+        }
+
+        .options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            text-align: left;
+            padding: 14px 18px;
+            font-size: 1.05rem;
+            background: #ffffff;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--text);
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background: #f1f5f9;
+        }
+
+        .option-btn:disabled {
+            cursor: default;
+        }
+
+        .option-prefix {
+            font-weight: 700;
+            margin-right: 12px;
+            min-width: 25px;
+        }
+
+        /* States after clicking */
+        .option-btn.correct {
+            background-color: var(--correct-bg);
+            border-color: var(--correct-border);
+            color: var(--correct-text);
+            font-weight: 600;
+        }
+
+        .option-btn.wrong {
+            background-color: var(--wrong-bg);
+            border-color: var(--wrong-border);
+            color: var(--wrong-text);
+        }
+
+        .explanation-box {
+            margin-top: 22px;
+            padding: 16px;
+            background-color: #f1f5f9;
+            border-left: 5px solid var(--primary);
+            border-radius: 6px;
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .explanation-title {
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .explanation-text {
+            font-size: 1rem;
+            line-height: 1.6;
+            white-space: pre-line;
+        }
+
+        .nav-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border);
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: 1px solid var(--border);
+            background: white;
+            color: var(--text);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: #e2e8f0;
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="header">
+        <div class="chapter-title" id="chapter-name">Chapter 1: Number System</div>
+        <div class="controls-top">
+            <span class="q-counter" id="q-counter">Q 1 / 10</span>
+            <button class="lang-btn" id="lang-toggle" onclick="toggleLanguage()">हिन्दी में देखें</button>
+        </div>
+    </div>
+
+    <div class="question-box" id="question-text"></div>
+
+    <div class="options-list" id="options-container"></div>
+
+    <div class="explanation-box" id="explanation-box">
+        <div class="explanation-title" id="exp-title">Explanation:</div>
+        <div class="explanation-text" id="explanation-text"></div>
+    </div>
+
+    <div class="nav-footer">
+        <button class="nav-btn" id="prev-btn" onclick="prevQuestion()">← Previous</button>
+        <button class="nav-btn" id="next-btn" onclick="nextQuestion()">Next →</button>
+    </div>
+</div>
+
+<script>
+    // ==========================================
+    // QUESTIONS DATABASE (R.S. AGGARWAL PDF)
+    // ==========================================
+    const questionsData = [
+        {
+            id: 1,
+            chapter: { en: "Chapter 1: Number System", hi: "अध्याय 1: संख्या पद्धति (Number System)" },
+            exam: "(CLAT, 2010)",
+            question: {
+                en: "What is the place value of 5 in 3254710?",
+                hi: "3254710 में 5 का स्थानीय मान (Place value) क्या है?"
+            },
+            options: {
+                en: ["5", "10000", "50000", "54710"],
+                hi: ["5", "10000", "50000", "54710"]
+            },
+            correctIndex: 2, // 0=a, 1=b, 2=c, 3=d
+            explanation: {
+                en: "In 3254710, 5 is at the ten-thousands place.\nPlace value of 5 = 5 × 10000 = 50000.",
+                hi: "3254710 में 5 दस-हजारवें (Ten-thousands) स्थान पर है।\n5 का स्थानीय मान = 5 × 10000 = 50000."
+            }
+        },
+        {
+            id: 2,
+            chapter: { en: "Chapter 1: Number System", hi: "अध्याय 1: संख्या पद्धति (Number System)" },
+            exam: "(R.R.B., 2006)",
+            question: {
+                en: "The face value of 8 in the number 458926 is:",
+                hi: "संख्या 458926 में 8 का जातीय मान (Face value) क्या है?"
+            },
+            options: {
+                en: ["8", "1000", "8000", "8926"],
+                hi: ["8", "1000", "8000", "8926"]
+            },
+            correctIndex: 0,
+            explanation: {
+                en: "The face value of a digit in a numeral is its own value, at whatever place it may be.\nTherefore, the face value of 8 is 8.",
+                hi: "किसी भी संख्या में किसी अंक का जातीय मान (Face value) उसका अपना स्वयं का मान होता है, चाहे वह किसी भी स्थान पर हो।\nअतः 8 का जातीय मान 8 ही होगा।"
+            }
+        },
+        {
+            id: 3,
+            chapter: { en: "Chapter 1: Number System", hi: "अध्याय 1: संख्या पद्धति (Number System)" },
+            exam: "(M.B.A., 2005)",
+            question: {
+                en: "The sum of the place values of 3 in the number 503535 is:",
+                hi: "संख्या 503535 में 3 के स्थानीय मानों का योग क्या है?"
+            },
+            options: {
+                en: ["6", "60", "3030", "3300"],
+                hi: ["6", "60", "3030", "3300"]
+            },
+            correctIndex: 2,
+            explanation: {
+                en: "In 503535, the first 3 from right is at tens place (3 × 10 = 30) and the second 3 is at thousands place (3 × 1000 = 3000).\nSum = 3000 + 30 = 3030.",
+                hi: "503535 में दाईं ओर से पहला 3 दहाई के स्थान पर है (3 × 10 = 30) और दूसरा 3 हजार के स्थान पर है (3 × 1000 = 3000)।\nयोग = 3000 + 30 = 3030."
+            }
+        },
+        {
+            id: 4,
+            chapter: { en: "Chapter 1: Number System", hi: "अध्याय 1: संख्या पद्धति (Number System)" },
+            exam: "",
+            question: {
+                en: "The difference between the place values of 7 and 3 in the number 527435 is:",
+                hi: "संख्या 527435 में 7 और 3 के स्थानीय मानों के बीच का अंतर क्या है?"
+            },
+            options: {
+                en: ["4", "5", "45", "6970"],
+                hi: ["4", "5", "45", "6970"]
+            },
+            correctIndex: 3,
+            explanation: {
+                en: "Place value of 7 = 7000\nPlace value of 3 = 30\nDifference = 7000 - 30 = 6970.",
+                hi: "7 का स्थानीय मान = 7000\n3 का स्थानीय मान = 30\nअंतर = 7000 - 30 = 6970."
+            }
+        },
+        {
+            id: 5,
+            chapter: { en: "Chapter 1: Number System", hi: "अध्याय 1: संख्या पद्धति (Number System)" },
+            exam: "",
+            question: {
+                en: "The difference between the local value and the face value of 7 in the numeral 32675149 is:",
+                hi: "संख्या 32675149 में 7 के स्थानीय मान (Local value) और जातीय मान (Face value) के बीच का अंतर क्या है?"
+            },
+            options: {
+                en: ["5149", "64851", "69993", "75142", "None of these"],
+                hi: ["5149", "64851", "69993", "75142", "इनमें से कोई नहीं"]
+            },
+            correctIndex: 2,
+            explanation: {
+                en: "Local value (Place value) of 7 = 70000\nFace value of 7 = 7\nDifference = 70000 - 7 = 69993.",
+                hi: "7 का स्थानीय मान = 70000\n7 का जातीय मान = 7\nअंतर = 70000 - 7 = 69993."
+            }
+        },
+        {
+            id: 6,
+            chapter: { en: "Chapter 1: Number System", hi: "अध्याय 1: संख्या पद्धति (Number System)" },
+            exam: "(M.C.A., 2005)",
+            question: {
+                en: "The sum of the greatest and smallest number of five digits is:",
+                hi: "पाँच अंकों की सबसे बड़ी और सबसे छोटी संख्या का योग क्या है?"
+            },
+            options: {
+                en: ["11,110", "10,999", "109,999", "111,110"],
+                hi: ["11,110", "10,999", "109,999", "111,110"]
+            },
+            correctIndex: 2,
+            explanation: {
+                en: "Greatest 5-digit number = 99999\nSmallest 5-digit number = 10000\nRequired sum = 99999 + 10000 = 109999.",
+                hi: "पाँच अंकों की सबसे बड़ी संख्या = 99999\nपाँच अंकों की सबसे छोटी संख्या = 10000\nअभीष्ट योग = 99999 + 10000 = 109999."
+            }
+        },
+        {
+            id: 7,
+            chapter: { en: "Chapter 1: Number System", hi: "अध्याय 1: संख्या पद्धति (Number System)" },
+            exam: "",
+            question: {
+                en: "If the largest three-digit number is subtracted from the smallest five-digit number, then the remainder is:",
+                hi: "यदि पाँच अंकों की सबसे छोटी संख्या में से तीन अंकों की सबसे बड़ी संख्या घटाई जाए, तो शेषफल क्या होगा?"
+            },
+            options: {
+                en: ["1", "9000", "9001", "90001"],
+                hi: ["1", "9000", "9001", "90001"]
+            },
+            correctIndex: 2,
+            explanation: {
+                en: "Smallest 5-digit number = 10000\nLargest 3-digit number = 999\nRequired difference = 10000 - 999 = 9001.",
+                hi: "पाँच अंकों की सबसे छोटी संख्या = 10000\nतीन अंकों की सबसे बड़ी संख्या = 999\nअभीष्ट अंतर = 10000 - 999 = 9001."
+            }
+        },
+        {
+            id: 8,
+            chapter: { en: "Chapter 1: Number System", hi: "अध्याय 1: संख्या पद्धति (Number System)" },
+            exam: "(R.R.B., 2006)",
+            question: {
+                en: "The smallest number of 5 digits beginning with 3 and ending with 5 will be:",
+                hi: "3 से शुरू होने वाली और 5 पर समाप्त होने वाली 5 अंकों की सबसे छोटी संख्या कौन-सी होगी?"
+            },
+            options: {
+                en: ["31005", "30015", "30005", "30025"],
+                hi: ["31005", "30015", "30005", "30025"]
+            },
+            correctIndex: 2,
+            explanation: {
+                en: "To make the number smallest, put zeros in the middle places.\nRequired number = 30005.",
+                hi: "संख्या को सबसे छोटा बनाने के लिए बीच के स्थानों पर शून्य (0) रखें।\nअभीष्ट संख्या = 30005."
+            }
+        },
+        {
+            id: 9,
+            chapter: { en: "Chapter 1: Number System", hi: "अध्याय 1: संख्या पद्धति (Number System)" },
+            exam: "(R.R.B., 2006)",
+            question: {
+                en: "What is the minimum number of four digits formed by using the digits 2, 4, 0, 7?",
+                hi: "अंकों 2, 4, 0, 7 का उपयोग करके बनने वाली चार अंकों की सबसे छोटी संख्या क्या है?"
+            },
+            options: {
+                en: ["2047", "2247", "2407", "2470"],
+                hi: ["2047", "2247", "2407", "2470"]
+            },
+            correctIndex: 0,
+            explanation: {
+                en: "0 cannot be placed at the thousands place (otherwise it becomes a 3-digit number). So we start with 2, followed by 0, 4, and 7.\nRequired number = 2047.",
+                hi: "0 को हजारवें स्थान पर नहीं रखा जा सकता (अन्यथा यह 3 अंकों की संख्या बन जाएगी)। इसलिए हम 2 से शुरू करेंगे, उसके बाद 0, 4 और 7 रखेंगे।\nअभीष्ट संख्या = 2047."
+            }
+        },
+        {
+            id: 10,
+            chapter: { en: "Chapter 1: Number System", hi: "अध्याय 1: संख्या पद्धति (Number System)" },
+            exam: "",
+            question: {
+                en: "All natural numbers and 0 are called the _______ numbers.",
+                hi: "सभी प्राकृत संख्याएँ (Natural numbers) और 0 _______ संख्याएँ कहलाती हैं।"
+            },
+            options: {
+                en: ["rational", "integer", "whole", "prime"],
+                hi: ["परिमेय (rational)", "पूर्णांक (integer)", "पूर्ण (whole)", "अभाज्य (prime)"]
+            },
+            correctIndex: 2,
+            explanation: {
+                en: "All counting numbers (1, 2, 3...) together with 0 form the set of whole numbers (0, 1, 2, 3...).",
+                hi: "सभी गिनती की संख्याएँ (1, 2, 3...) और 0 मिलकर पूर्ण संख्याओं (Whole numbers) का समूह बनाती हैं।"
+            }
+        }
+    ];
+
+    // ==========================================
+    // APP STATE & LOGIC
+    // ==========================================
+    let currentLang = 'en'; // 'en' or 'hi'
+    let currentIndex = 0;
+    // Track user selections so if they switch language or go back/forth, state is preserved
+    let userAnswers = new Array(questionsData.length).fill(null);
+
+    const optionLabels = ['(a)', '(b)', '(c)', '(d)', '(e)'];
+
+    function renderQuestion() {
+        const qData = questionsData[currentIndex];
+        const selectedOption = userAnswers[currentIndex];
+
+        // Update Header
+        document.getElementById('chapter-name').innerText = qData.chapter[currentLang];
+        document.getElementById('q-counter').innerText = currentLang === 'en' 
+            ? `Question ${currentIndex + 1} / ${questionsData.length}` 
+            : `प्रश्न ${currentIndex + 1} / ${questionsData.length}`;
+        
+        document.getElementById('lang-toggle').innerText = currentLang === 'en' ? 'हिन्दी में बदलें' : 'Switch to English';
+
+        // Update Question Text
+        const qTextEl = document.getElementById('question-text');
+        qTextEl.innerHTML = `Q${qData.id}. ${qData.question[currentLang]} <span class="exam-tag">${qData.exam}</span>`;
+
+        // Render Options
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = '';
+
+        qData.options[currentLang].forEach((optText, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerHTML = `<span class="option-prefix">${optionLabels[idx]}</span> <span>${optText}</span>`;
+            
+            // If user already answered this question
+            if (selectedOption !== null) {
+                btn.disabled = true;
+                if (idx === qData.correctIndex) {
+                    btn.classList.add('correct');
+                } else if (idx === selectedOption) {
+                    btn.classList.add('wrong');
+                }
+            } else {
+                btn.onclick = () => handleOptionClick(idx);
+            }
+
+            optionsContainer.appendChild(btn);
+        });
+
+        // Handle Explanation Box visibility
+        const expBox = document.getElementById('explanation-box');
+        if (selectedOption !== null) {
+            expBox.style.display = 'block';
+            document.getElementById('exp-title').innerText = currentLang === 'en' ? 'Explanation:' : 'व्याख्या (Explanation):';
+            document.getElementById('explanation-text').innerText = qData.explanation[currentLang];
+        } else {
+            expBox.style.display = 'none';
+        }
+
+        // Update Navigation Buttons
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        
+        prevBtn.innerText = currentLang === 'en' ? '← Previous' : '← पिछला सवाल';
+        nextBtn.innerText = currentLang === 'en' ? 'Next →' : 'अगला सवाल →';
+
+        prevBtn.disabled = currentIndex === 0;
+        nextBtn.disabled = currentIndex === questionsData.length - 1;
+    }
+
+    function handleOptionClick(selectedIdx) {
+        userAnswers[currentIndex] = selectedIdx;
+        renderQuestion();
+    }
+
+    function toggleLanguage() {
+        currentLang = currentLang === 'en' ? 'hi' : 'en';
+        renderQuestion();
+    }
+
+    function nextQuestion() {
+        if (currentIndex < questionsData.length - 1) {
+            currentIndex++;
+            renderQuestion();
+        }
+    }
+
+    function prevQuestion() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            renderQuestion();
+        }
+    }
+
+    // Initialize first question on page load
+    renderQuestion();
+</script>
+
+</body>
+</html>
