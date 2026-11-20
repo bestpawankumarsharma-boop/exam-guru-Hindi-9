@@ -1,145 +1,61 @@
 <!doctype html>
-<html lang="hi">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#173c70">
-<title>Exam Guru Hindi</title>
-<link rel="manifest" href="manifest.json">
+<html lang="hi"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#173c70"><title>Exam Guru Hindi</title>
 <style>
 :root{--blue:#173c70;--light:#eef4ff;--ink:#172033;--muted:#65718a;--green:#16834a}
 *{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,"Noto Sans Devanagari",sans-serif;background:#f4f6fb;color:var(--ink)}
 header{background:linear-gradient(135deg,#173c70,#2862a6);color:white;padding:22px 18px 26px;border-radius:0 0 24px 24px}
 header h1{margin:0;font-size:25px}header p{margin:7px 0 0;color:#e2edff;font-size:14px}
-main{max-width:720px;margin:auto;padding:16px}
-.toolbar{display:flex;gap:8px;justify-content:space-between;align-items:center;margin-bottom:14px}
-select,.btn{border:1px solid #d5ddeb;border-radius:12px;padding:10px 12px;background:white;font:inherit}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.card{background:white;border:1px solid #e4e9f2;border-radius:17px;padding:16px;box-shadow:0 3px 12px #1d35570a}
-.subject{cursor:pointer;text-align:left;color:inherit;width:100%;font:inherit}
-.subject strong{display:block;font-size:17px;margin:8px 0 4px}.muted{color:var(--muted);font-size:13px}
-.icon{font-size:25px}.section{margin:18px 0 10px;font-size:18px}
-button{cursor:pointer}.primary{background:var(--blue);color:white;border:0;border-radius:12px;padding:12px 16px;font:inherit;font-weight:650}
+main{max-width:820px;margin:auto;padding:16px}.toolbar,.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.toolbar{justify-content:space-between;margin-bottom:14px}
+select{border:1px solid #d5ddeb;border-radius:12px;padding:10px 12px;background:white;font:inherit}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card{background:white;border:1px solid #e4e9f2;border-radius:17px;padding:16px;box-shadow:0 3px 12px #1d35570a}
+.subject{cursor:pointer;text-align:left;color:inherit;width:100%;font:inherit}.subject strong{display:block;font-size:16px;margin:8px 0 4px}.muted{color:var(--muted);font-size:13px}
+.icon{font-size:24px}.section{margin:18px 0 10px;font-size:18px}button{cursor:pointer}
+.primary{background:var(--blue);color:white;border:0;border-radius:12px;padding:12px 16px;font:inherit;font-weight:650}
 .secondary{background:#edf2fa;color:var(--blue);border:0;border-radius:12px;padding:11px 14px;font:inherit}
 .question{font-size:19px;line-height:1.55;font-weight:700;margin:12px 0 18px}
 .option{display:block;width:100%;text-align:left;margin:9px 0;padding:13px;border:1px solid #dce3ef;background:white;border-radius:12px;font:inherit}
-.option.selected{border:2px solid var(--blue);background:var(--light)}
-.option.correct{border:2px solid var(--green);background:#edfff4}
-.option.wrong{border:2px solid #c43b45;background:#fff1f1}
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.hidden{display:none!important}
-footer{text-align:center;color:var(--muted);font-size:12px;padding:24px}
+.option.selected{border:2px solid var(--blue);background:var(--light)}.option.correct{border:2px solid var(--green);background:#edfff4}.option.wrong{border:2px solid #c43b45;background:#fff1f1}
+.hidden{display:none!important}footer{text-align:center;color:var(--muted);font-size:12px;padding:24px}
 @media(max-width:430px){.grid{grid-template-columns:1fr 1fr}header h1{font-size:22px}.card{padding:13px}}
-</style>
-</head>
-<body>
-<header><h1>🎓 Exam Guru Hindi</h1><p id="tagline">आपकी सफलता, हमारी तैयारी! · Your success, our preparation</p></header>
-<main>
-<div class="toolbar">
-  <span class="muted" id="welcome">आज की तैयारी शुरू करें</span>
-  <select id="language" aria-label="Language"><option value="hi">हिंदी</option><option value="en">English</option></select>
-</div>
-<section id="home">
-  <div class="card"><strong id="dailyTitle">आज का अभ्यास</strong><p class="muted" id="dailyText">विषय चुनें और छोटा टेस्ट दें। हर उत्तर के बाद explanation मिलेगा।</p><div class="row"><span class="muted" id="attempts">टेस्ट पूरे: 0</span><span class="muted" id="best">सर्वश्रेष्ठ स्कोर: 0%</span></div></div>
-  <h2 class="section" id="chooseTitle">विषय चुनें / Choose a subject</h2>
-  <div class="grid" id="subjects"></div>
-  <h2 class="section" id="historyTitle">हाल के टेस्ट</h2><div id="history" class="card muted">अभी कोई टेस्ट नहीं हुआ।</div>
-</section>
-<section id="test" class="hidden">
-  <div class="row" style="justify-content:space-between"><button class="secondary" id="back">← <span id="backText">वापस</span></button><span class="muted" id="progress">1 / 5</span></div>
-  <div class="card" style="margin-top:14px">
-    <div class="muted" id="subjectLabel"></div><div class="question" id="question"></div><div id="options"></div>
-    <div id="explanation" class="card hidden" style="margin-top:14px;background:#f2f8ff"></div>
-    <div class="row" style="margin-top:15px"><button class="primary" id="check">उत्तर जाँचें</button><button class="primary hidden" id="next">अगला प्रश्न →</button></div>
-  </div>
-</section>
-<section id="result" class="hidden">
-  <div class="card"><h2 id="resultTitle">टेस्ट पूरा हुआ!</h2><div class="question" id="resultScore"></div><p id="resultMessage" class="muted"></p><button class="primary" id="again">होम पर जाएँ</button></div>
-</section>
-</main>
-<footer>Exam Guru Hindi · शुरुआती मुफ्त संस्करण · Practice responsibly</footer>
+</style></head><body>
+<header><h1>🎓 Exam Guru Hindi</h1><p>आपकी सफलता, हमारी तैयारी! · Your success, our preparation</p></header>
+<main><div class="toolbar"><span class="muted" id="welcome">आज की तैयारी शुरू करें</span><select id="language"><option value="hi">हिंदी</option><option value="en">English</option></select></div>
+<section id="home"><div class="card"><strong>आज का अभ्यास / Today's practice</strong><p class="muted">24 Maths टॉपिक्स में अभ्यास करें।</p><div class="row"><span class="muted" id="attempts"></span><span class="muted" id="best"></span></div></div>
+<h2 class="section">Maths के टॉपिक्स चुनें / Choose a topic</h2><div class="grid" id="subjects"></div><h2 class="section">हाल के टेस्ट / Recent tests</h2><div id="history" class="card muted"></div></section>
+<section id="test" class="hidden"><div class="row" style="justify-content:space-between"><button class="secondary" id="back">← वापस</button><span class="muted" id="progress"></span></div>
+<div class="card" style="margin-top:14px"><div class="muted" id="subjectLabel"></div><div class="question" id="question"></div><div id="options"></div><div id="explanation" class="card hidden" style="margin-top:14px;background:#f2f8ff"></div>
+<div class="row" style="margin-top:15px"><button class="primary" id="check">उत्तर जाँचें</button><button class="primary hidden" id="next">अगला प्रश्न →</button></div></div></section>
+<section id="result" class="hidden"><div class="card"><h2>टेस्ट पूरा हुआ! / Test completed!</h2><div class="question" id="resultScore"></div><p id="resultMessage" class="muted"></p><button class="primary" id="again">होम पर जाएँ / Home</button></div></section></main>
+<footer>Exam Guru Hindi · Original practice starter bank</footer>
 <script>
-const data={
-  "Maths":[
-    ["800 का 25% कितना है?","What is 25% of 800?",["100","150","200","250"],2,"800 × 25 ÷ 100 = 200."],
-    ["यदि किसी वस्तु का क्रय मूल्य ₹400 और विक्रय मूल्य ₹500 है, लाभ प्रतिशत कितना है?","An item costs ₹400 and sells for ₹500. What is the profit percentage?",["20%","25%","30%","40%"],1,"लाभ = 100; लाभ% = 100/400 × 100 = 25%."],
-    ["12 और 18 का LCM क्या है?","What is the LCM of 12 and 18?",["24","30","36","48"],2,"12 और 18 का लघुत्तम समापवर्त्य 36 है."],
-    ["एक संख्या का 1/5 भाग 15 है। संख्या क्या है?","One-fifth of a number is 15. Find the number.",["50","60","75","90"],2,"संख्या = 15 × 5 = 75."],
-    ["2, 4, 6, 8 का औसत क्या है?","What is the average of 2, 4, 6, 8?",["4","5","6","7"],1,"औसत = (2+4+6+8) ÷ 4 = 5."]
-  ],
-  "Reasoning":[
-    ["A, B की बहन है। B, C का बेटा है। A का C से क्या संबंध है?","A is B's sister. B is C's son. How is A related to C?",["पुत्री / Daughter","माता / Mother","बहन / Sister","पत्नी / Wife"],0,"B, C का बेटा है और A उसकी बहन है, इसलिए A, C की पुत्री है."],
-    ["श्रृंखला पूरी करें: 2, 4, 8, 16, ?","Complete the series: 2, 4, 8, 16, ?",["20","24","30","32"],3,"हर बार संख्या दोगुनी हो रही है. अगली संख्या 32 है."],
-    ["यदि CAT को DBU लिखा जाए, तो DOG कैसे लिखा जाएगा?","If CAT is coded as DBU, how is DOG coded?",["EPH","EOG","CNG","FPH"],0,"हर अक्षर के बाद वाला अक्षर लिया गया है: D→E, O→P, G→H."],
-    ["इनमें अलग कौन है: सेब, आम, गाजर, केला?","Which is different: apple, mango, carrot, banana?",["सेब / Apple","आम / Mango","गाजर / Carrot","केला / Banana"],2,"गाजर सब्जी है, बाकी फल हैं."],
-    ["उत्तर की ओर मुँह करके दाएँ मुड़ें। अब किस दिशा में हैं?","Facing north, turn right. Which direction are you facing?",["पश्चिम / West","पूर्व / East","दक्षिण / South","उत्तर / North"],1,"उत्तर से दाएँ मुड़ने पर पूर्व दिशा होती है."]
-  ],
-  "GK":[
-    ["भारत का संविधान कब लागू हुआ?","When did the Constitution of India come into effect?",["15 अगस्त 1947","26 जनवरी 1950","26 नवंबर 1949","2 अक्टूबर 1950"],1,"संविधान 26 जनवरी 1950 को लागू हुआ."],
-    ["भारत की राजधानी क्या है?","What is the capital of India?",["मुंबई / Mumbai","कोलकाता / Kolkata","नई दिल्ली / New Delhi","चेन्नई / Chennai"],2,"भारत की राजधानी नई दिल्ली है."],
-    ["भारत का राष्ट्रीय पशु कौन है?","What is the national animal of India?",["शेर / Lion","बाघ / Tiger","हाथी / Elephant","मोर / Peacock"],1,"भारत का राष्ट्रीय पशु बाघ है."],
-    ["लोकसभा का सामान्य कार्यकाल कितना है?","What is the normal term of the Lok Sabha?",["4 वर्ष / years","5 वर्ष / years","6 वर्ष / years","7 वर्ष / years"],1,"लोकसभा का सामान्य कार्यकाल 5 वर्ष है."],
-    ["भारतीय रिजर्व बैंक की स्थापना किस वर्ष हुई?","In which year was the Reserve Bank of India established?",["1935","1947","1950","1955"],0,"RBI की स्थापना 1 अप्रैल 1935 को हुई."]
-  ],
-  "DSSSB / SSC":[
-    ["भारत में मतदान की न्यूनतम आयु कितनी है?","What is the minimum voting age in India?",["16 वर्ष / years","18 वर्ष / years","21 वर्ष / years","25 वर्ष / years"],1,"भारत में मतदान की न्यूनतम आयु 18 वर्ष है."],
-    ["भारतीय संसद के कितने सदन हैं?","How many houses does the Indian Parliament have?",["एक / One","दो / Two","तीन / Three","चार / Four"],1,"भारतीय संसद के दो सदन हैं: लोकसभा और राज्यसभा."],
-    ["भारत के प्रथम राष्ट्रपति कौन थे?","Who was the first President of India?",["डॉ. राजेंद्र प्रसाद","डॉ. एस. राधाकृष्णन","जवाहरलाल नेहरू","सरदार पटेल"],0,"डॉ. राजेंद्र प्रसाद भारत के प्रथम राष्ट्रपति थे."],
-    ["श्रृंखला में अगली संख्या: 5, 10, 20, 40, ?","Next number: 5, 10, 20, 40, ?",["45","60","80","100"],2,"हर संख्या पिछली संख्या की दोगुनी है. उत्तर 80 है."],
-    ["एक घंटे में कितने मिनट होते हैं?","How many minutes are there in one hour?",["30","45","60","100"],2,"एक घंटे में 60 मिनट होते हैं."]
-  ]
-};
-const names={hi:["गणित","रीजनिंग","सामान्य ज्ञान","DSSSB / SSC"],en:["Maths","Reasoning","General Knowledge","DSSSB / SSC"]};
-const desc={hi:["प्रतिशत, औसत, ब्याज","तर्कशक्ति और श्रृंखला","Static GK अभ्यास","परीक्षा उपयोगी प्रश्न"],en:["Percentage, average, interest","Logic and series","Static GK practice","Exam-focused questions"]};
-const keys=Object.keys(data), icons=["➗","🧠","🌍","📚"];
-let lang="hi",subject="",idx=0,selected=-1,score=0,locked=false;
+const bank = {"Simplification": [{"en": "48 ÷ 6 × 3 + 5", "hi": "48 ÷ 6 × 3 + 5 का मान क्या है?", "options": ["19", "24", "29", "32"], "answer": 2, "explanation": "48 ÷ 6 = 8; 8 × 3 = 24; 24 + 5 = 29.", "level": "Easy"}, {"en": "(36 + 24) ÷ 5", "hi": "(36 + 24) ÷ 5 का मान क्या है?", "options": ["10", "12", "14", "15"], "answer": 1, "explanation": "पहले कोष्ठक: 36 + 24 = 60; फिर 60 ÷ 5 = 12.", "level": "Easy"}, {"en": "15% of 200 + 20", "hi": "200 का 15% + 20 कितना है?", "options": ["40", "45", "50", "55"], "answer": 2, "explanation": "200 × 15/100 = 30; 30 + 20 = 50.", "level": "Medium"}], "BODMAS": [{"en": "18 + 6 × 4", "hi": "18 + 6 × 4 का मान क्या है?", "options": ["42", "96", "48", "72"], "answer": 0, "explanation": "पहले गुणा: 6 × 4 = 24; फिर 18 + 24 = 42.", "level": "Easy"}, {"en": "(24 − 8) ÷ 4 + 3", "hi": "(24 − 8) ÷ 4 + 3 का मान क्या है?", "options": ["4", "7", "8", "11"], "answer": 1, "explanation": "कोष्ठक: 16; 16 ÷ 4 = 4; 4 + 3 = 7.", "level": "Easy"}, {"en": "64 ÷ 8 × (5 − 2)", "hi": "64 ÷ 8 × (5 − 2) का मान क्या है?", "options": ["8", "16", "24", "32"], "answer": 2, "explanation": "कोष्ठक = 3; भाग और गुणा बाएँ से दाएँ: 64 ÷ 8 × 3 = 24.", "level": "Medium"}], "Number System": [{"en": "What is the smallest prime number?", "hi": "सबसे छोटी अभाज्य संख्या कौन-सी है?", "options": ["0", "1", "2", "3"], "answer": 2, "explanation": "2 सबसे छोटी अभाज्य संख्या है; इसके केवल दो गुणनखंड हैं: 1 और 2.", "level": "Easy"}, {"en": "How many factors does 12 have?", "hi": "12 के कुल कितने गुणनखंड हैं?", "options": ["4", "5", "6", "8"], "answer": 2, "explanation": "12 के गुणनखंड: 1, 2, 3, 4, 6, 12; कुल 6.", "level": "Easy"}, {"en": "Which is irrational?", "hi": "इनमें से कौन अपरिमेय है?", "options": ["0.5", "3/4", "√2", "2"], "answer": 2, "explanation": "√2 को दो पूर्णांकों के अनुपात में व्यक्त नहीं किया जा सकता, इसलिए यह अपरिमेय है.", "level": "Medium"}], "HCF & LCM": [{"en": "Find the HCF of 18 and 24.", "hi": "18 और 24 का HCF ज्ञात कीजिए।", "options": ["3", "6", "9", "12"], "answer": 1, "explanation": "18 = 2×3×3 और 24 = 2×2×2×3; समान गुणनखंड 2×3 = 6.", "level": "Easy"}, {"en": "Find the LCM of 8 and 12.", "hi": "8 और 12 का LCM ज्ञात कीजिए।", "options": ["16", "20", "24", "36"], "answer": 2, "explanation": "8 = 2³ और 12 = 2²×3; LCM = 2³×3 = 24.", "level": "Easy"}, {"en": "Two bells ring every 12 and 18 minutes. When together again?", "hi": "दो घंटियाँ 12 और 18 मिनट पर बजती हैं। फिर साथ कब बजेंगी?", "options": ["24 min", "30 min", "36 min", "48 min"], "answer": 2, "explanation": "साथ बजने का समय LCM(12,18) = 36 मिनट है.", "level": "Medium"}], "Percentage": [{"en": "What is 25% of 640?", "hi": "640 का 25% कितना है?", "options": ["120", "140", "160", "180"], "answer": 2, "explanation": "640 × 25/100 = 160.", "level": "Easy"}, {"en": "A number increases from 80 to 100. Find the increase %.", "hi": "एक संख्या 80 से 100 हो गई। वृद्धि प्रतिशत ज्ञात करें।", "options": ["20%", "25%", "30%", "40%"], "answer": 1, "explanation": "वृद्धि = 20; वृद्धि% = 20/80 × 100 = 25%.", "level": "Easy"}, {"en": "If 40% of x is 72, find x.", "hi": "यदि x का 40% = 72 है, तो x ज्ञात करें।", "options": ["160", "170", "180", "190"], "answer": 2, "explanation": "0.4x = 72 ⇒ x = 72/0.4 = 180.", "level": "Medium"}], "Ratio & Proportion": [{"en": "Simplify 24:36.", "hi": "24:36 को सरल कीजिए।", "options": ["2:3", "3:2", "4:5", "6:9"], "answer": 0, "explanation": "दोनों पदों को 12 से भाग दें: 2:3.", "level": "Easy"}, {"en": "Divide  sixty in the ratio 2:3.", "hi": "60 को 2:3 के अनुपात में बाँटिए।", "options": ["20,40", "24,36", "30,30", "18,42"], "answer": 1, "explanation": "कुल भाग 5; एक भाग = 60/5 = 12; हिस्से 24 और 36.", "level": "Medium"}, {"en": "If a:b = 3:5 and b:c = 10:7, find a:c.", "hi": "यदि a:b = 3:5 और b:c = 10:7, तो a:c ज्ञात करें।", "options": ["3:7", "6:7", "7:6", "5:7"], "answer": 1, "explanation": "पहले अनुपात को 2 से गुणा करें: 6:10; इसलिए a:c = 6:7.", "level": "Hard"}], "Average": [{"en": "Find the average of 6, 8, 10.", "hi": "6, 8, 10 का औसत ज्ञात करें।", "options": ["7", "8", "9", "10"], "answer": 1, "explanation": "औसत = (6+8+10)/3 = 24/3 = 8.", "level": "Easy"}, {"en": "Average of five numbers is 12. Their sum is?", "hi": "पाँच संख्याओं का औसत 12 है। उनका योग कितना है?", "options": ["50", "55", "60", "65"], "answer": 2, "explanation": "योग = औसत × संख्या = 12 × 5 = 60.", "level": "Easy"}, {"en": "Average of 10 numbers is 15. If 24 is added, new average?", "hi": "10 संख्याओं का औसत 15 है। 24 जोड़ने पर नया औसत?", "options": ["15", "15 9/11", "16", "16 1/11"], "answer": 1, "explanation": "पुराना योग 150; नया योग 174; नया औसत = 174/11 = 15 9/11.", "level": "Hard"}], "Profit & Loss": [{"en": "CP ₹400, SP ₹460. Profit?", "hi": "क्रय मूल्य ₹400 और विक्रय मूल्य ₹460 है। लाभ कितना?", "options": ["₹40", "₹50", "₹60", "₹70"], "answer": 2, "explanation": "लाभ = SP − CP = 460 − 400 = ₹60.", "level": "Easy"}, {"en": "CP ₹800, SP ₹720. Loss percent?", "hi": "क्रय मूल्य ₹800 और विक्रय मूल्य ₹720 है। हानि प्रतिशत?", "options": ["8%", "10%", "12%", "15%"], "answer": 1, "explanation": "हानि = 80; हानि% = 80/800 × 100 = 10%.", "level": "Easy"}, {"en": "An article is sold at 20% profit for ₹600. Find CP.", "hi": "एक वस्तु 20% लाभ पर ₹600 में बेची गई। CP ज्ञात करें।", "options": ["₹480", "₹500", "₹520", "₹540"], "answer": 1, "explanation": "SP = 120% of CP; CP = 600 × 100/120 = ₹500.", "level": "Medium"}], "Discount": [{"en": "10% discount on ₹500 is?", "hi": "₹500 पर 10% छूट कितनी है?", "options": ["₹25", "₹40", "₹50", "₹60"], "answer": 2, "explanation": "छूट = 500 × 10/100 = ₹50.", "level": "Easy"}, {"en": "Marked price ₹800, discount 15%. Selling price?", "hi": "अंकित मूल्य ₹800 और छूट 15% है। विक्रय मूल्य?", "options": ["₹660", "₹680", "₹700", "₹720"], "answer": 1, "explanation": "छूट = ₹120; विक्रय मूल्य = 800 − 120 = ₹680.", "level": "Easy"}, {"en": "Successive discounts 10% and 20% equal?", "hi": "10% और 20% की क्रमिक छूट के बराबर एकल छूट?", "options": ["28%", "30%", "32%", "ख 18%"], "answer": 0, "explanation": "एकल छूट = 10 + 20 − (10×20/100) = 28%.", "level": "Medium"}], "Simple Interest": [{"en": "SI on ₹1000 at 5% for 2 years?", "hi": "₹1000 पर 5% वार्षिक दर से 2 वर्ष का SI?", "options": ["₹50", "₹100", "₹150", "₹200"], "answer": 1, "explanation": "SI = PRT/100 = 1000×5×2/100 = ₹100.", "level": "Easy"}, {"en": "Find principal if SI ₹240, rate 6%, time 4 years.", "hi": "SI ₹240, दर 6%, समय 4 वर्ष हो तो मूलधन?", "options": ["₹800", "₹900", "₹1000", "₹1200"], "answer": 2, "explanation": "P = SI×100/(R×T) = 240×100/24 = ₹1000.", "level": "Medium"}, {"en": "At what rate does ₹1500 earn ₹450 SI in 5 years?", "hi": "₹1500 पर 5 वर्ष में ₹450 SI मिले तो दर क्या है?", "options": ["5%", "6%", "7%", "8%"], "answer": 1, "explanation": "R = SI×100/(P×T) = 45000/7500 = 6%.", "level": "Medium"}], "Compound Interest": [{"en": "CI on ₹1000 at 10% for 1 year?", "hi": "₹1000 पर 10% वार्षिक दर से 1 वर्ष का CI?", "options": ["₹10", "₹100", "₹110", "₹200"], "answer": 1, "explanation": "एक वर्ष के लिए CI = 1000×10/100 = ₹100.", "level": "Easy"}, {"en": "Amount on ₹2000 at 10% compounded annually for 2 years?", "hi": "₹2000 पर 10% वार्षिक चक्रवृद्धि दर से 2 वर्ष बाद मिश्रधन?", "options": ["₹2200", "₹2400", "₹2420", "₹2440"], "answer": 2, "explanation": "A = 2000×(1.1)² = ₹2420.", "level": "Medium"}, {"en": "Difference between CI and SI on ₹1000 at 10% for 2 years?", "hi": "₹1000 पर 10% दर से 2 वर्ष के CI और SI का अंतर?", "options": ["₹5", "₹10", "₹15", "₹20"], "answer": 1, "explanation": "SI = ₹200; CI = ₹210; अंतर = ₹10.", "level": "Medium"}], "Time & Work": [{"en": "A completes work in 10 days. One day's work?", "hi": "A काम 10 दिन में करता है। एक दिन का काम?", "options": ["1/5", "1/10", "1/15", "1/20"], "answer": 1, "explanation": "एक दिन का काम = 1/10.", "level": "Easy"}, {"en": "A takes 6 days, B takes 3 days. Together?", "hi": "A 6 दिन और B 3 दिन में काम करते हैं। साथ में कितना समय?", "options": ["2 days", "3 days", "4 days", "5 days"], "answer": 0, "explanation": "दर = 1/6 + 1/3 = 1/2; समय = 2 दिन.", "level": "Medium"}, {"en": "A and B together finish in 8 days; A alone in 12. B alone?", "hi": "A और B साथ 8 दिन में, A अकेला 12 दिन में करता है। B अकेला?", "options": ["18 days", "20 days", "24 days", "30 days"], "answer": 2, "explanation": "B की दर = 1/8 − 1/12 = 1/24; अतः 24 दिन.", "level": "Hard"}], "Pipes & Cisterns": [{"en": "A pipe fills a tank in 5 hours. One-hour work?", "hi": "एक नल टंकी 5 घंटे में भरता है। एक घंटे का काम?", "options": ["1/2", "1/3", "1/5", "1/10"], "answer": 2, "explanation": "एक घंटे में टंकी का 1/5 भाग भरेगा.", "level": "Easy"}, {"en": "Two pipes fill in 6 and 3 hours. Together?", "hi": "दो नल 6 और 3 घंटे में भरते हैं। साथ में समय?", "options": ["1 hour", "2 hours", "3 hours", "4 hours"], "answer": 1, "explanation": "दर = 1/6 + 1/3 = 1/2 टंकी/घंटा; समय 2 घंटे.", "level": "Medium"}, {"en": "A fills in 4h, leak empties in 12h. Net fill time?", "hi": "नल 4 घंटे में भरता है, रिसाव 12 घंटे में खाली करता है। कुल समय?", "options": ["4h", "5h", "6h", "8h"], "answer": 2, "explanation": "शुद्ध दर = 1/4 − 1/12 = 1/6; समय 6 घंटे.", "level": "Hard"}], "Time-Speed-Distance": [{"en": "Distance at 60 km/h for 2 hours?", "hi": "60 किमी/घंटा की चाल से 2 घंटे में दूरी?", "options": ["100 km", "110 km", "120 km", "130 km"], "answer": 2, "explanation": "दूरी = चाल × समय = 60×2 = 120 किमी.", "level": "Easy"}, {"en": "A 150 km journey takes 3 hours. Speed?", "hi": "150 किमी की यात्रा 3 घंटे में पूरी हुई। चाल?", "options": ["40", "45", "50", "60 km/h"], "answer": 2, "explanation": "चाल = दूरी/समय = 150/3 = 50 किमी/घंटा.", "level": "Easy"}, {"en": "Convert 72 km/h into m/s.", "hi": "72 किमी/घंटा को मीटर/सेकंड में बदलें।", "options": ["18", "20", "22", "25"], "answer": 1, "explanation": "72 × 5/18 = 20 मीटर/सेकंड.", "level": "Medium"}], "Trains": [{"en": "A 100 m train crosses a pole in 10 s. Speed?", "hi": "100 मीटर लंबी ट्रेन खंभे को 10 सेकंड में पार करती है। चाल?", "options": ["8", "10", "12", "15 m/s"], "answer": 1, "explanation": "चाल = 100/10 = 10 मीटर/सेकंड.", "level": "Easy"}, {"en": "A 120 m train at 54 km/h crosses a pole in?", "hi": "120 मीटर ट्रेन 54 किमी/घंटा से खंभा कितने समय में पार करेगी?", "options": ["6 s", "8 s", "10 s", "12 s"], "answer": 1, "explanation": "54 किमी/घंटा = 15 मीटर/सेकंड; समय = 120/15 = 8 सेकंड.", "level": "Medium"}, {"en": "A 150 m train crosses a 250 m platform at 20 m/s. Time?", "hi": "150 मीटर ट्रेन 250 मीटर प्लेटफॉर्म को 20 मी/से से पार करती है। समय?", "options": ["15s", "20s", "25s", "30s"], "answer": 1, "explanation": "कुल दूरी = 150+250 = 400 मीटर; समय = 400/20 = 20 सेकंड.", "level": "Medium"}], "Boats & Streams": [{"en": "Still-water speed 10 km/h, stream 2 km/h. Downstream?", "hi": "स्थिर जल में चाल 10 और धारा 2 किमी/घंटा है। अनुकूल चाल?", "options": ["8", "10", "12", "14"], "answer": 2, "explanation": "अनुकूल चाल = 10 + 2 = 12 किमी/घंटा.", "level": "Easy"}, {"en": "Downstream 15, upstream 9 km/h. Stream speed?", "hi": "अनुकूल चाल 15 और प्रतिकूल चाल 9 किमी/घंटा है। धारा की चाल?", "options": ["2", "3", "4", "6"], "answer": 1, "explanation": "धारा की चाल = (15−9)/2 = 3 किमी/घंटा.", "level": "Medium"}, {"en": "Still-water speed if downstream 18 and upstream 12?", "hi": "अनुकूल चाल 18 और प्रतिकूल चाल 12 है। स्थिर जल की चाल?", "options": ["12", "15", "18", "30"], "answer": 1, "explanation": "स्थिर जल की चाल = (18+12)/2 = 15.", "level": "Medium"}], "Partnership": [{"en": "A invests ₹1000, B ₹2000 for same time. Profit ratio?", "hi": "A ₹1000 और B ₹2000 समान समय के लिए लगाते हैं। लाभ अनुपात?", "options": ["1:2", "2:1", "1:3", "2:3"], "answer": 0, "explanation": "समान समय में लाभ अनुपात पूँजी के अनुपात 1000:2000 = 1:2 के बराबर है.", "level": "Easy"}, {"en": "A invests 5000 for 12 months, B 6000 for 10 months. Ratio?", "hi": "A ₹5000 को 12 माह और B ₹6000 को 10 माह लगाता है। अनुपात?", "options": ["1:1", "5:6", "6:5", "2:3"], "answer": 0, "explanation": "A का गुणनफल 5000×12=60000; B का 6000×10=60000; अनुपात 1:1.", "level": "Medium"}, {"en": "Profit ₹9000 shared in ratio 2:1. A's share?", "hi": "₹9000 लाभ 2:1 में बाँटा गया। A का हिस्सा?", "options": ["₹3000", "₹4500", "₹6000", "₹7000"], "answer": 2, "explanation": "कुल भाग 3; A का हिस्सा = 9000×2/3 = ₹6000.", "level": "Easy"}], "Mixture & Alligation": [{"en": "Mix 2 L water with 3 L milk. Total mixture?", "hi": "2 लीटर पानी और 3 लीटर दूध मिलाया। कुल मिश्रण?", "options": ["3 L", "4 L", "5 L", "6 L"], "answer": 2, "explanation": "कुल मात्रा = 2+3 = 5 लीटर.", "level": "Easy"}, {"en": "Mix 10 L at ₹20/L and 10 L at ₹30/L. Mean price?", "hi": "₹20/लीटर के 10 लीटर और ₹30/लीटर के 10 लीटर मिलाए। औसत मूल्य?", "options": ["₹22", "₹25", "₹28", "₹30"], "answer": 1, "explanation": "कुल लागत = 200+300=500; मात्रा 20 L; औसत ₹25/L.", "level": "Medium"}, {"en": "In what ratio mix ₹40 and ₹60 items for mean ₹50?", "hi": "₹40 और ₹60 वाली वस्तुओं को ₹50 औसत के लिए किस अनुपात में मिलाएँ?", "options": ["1:1", "1:2", "2:1", "3:2"], "answer": 0, "explanation": "आरोपण: (60−50):(50−40) = 10:10 = 1:1.", "level": "Medium"}], "Age Problems": [{"en": "Father is 40, son 10. Age difference?", "hi": "पिता 40 और पुत्र 10 वर्ष के हैं। आयु अंतर?", "options": ["20", "25", "30", "35"], "answer": 2, "explanation": "आयु अंतर = 40−10 = 30 वर्ष.", "level": "Easy"}, {"en": "A is twice B's age. B is 12. A?", "hi": "A की आयु B से दोगुनी है। B 12 वर्ष का है। A?", "options": ["18", "20", "24", "26"], "answer": 2, "explanation": "A = 2×12 = 24 वर्ष.", "level": "Easy"}, {"en": "Sum of ages is 50; ratio 3:2. Older age?", "hi": "दो आयु का योग 50 और अनुपात 3:2 है। बड़ी आयु?", "options": ["20", "25", "30", "35"], "answer": 2, "explanation": "कुल भाग 5; एक भाग 10; बड़ी आयु = 3×10 = 30.", "level": "Medium"}], "Mensuration 2D/3D": [{"en": "Area of rectangle 8 cm × 5 cm?", "hi": "8 सेमी × 5 सेमी आयत का क्षेत्रफल?", "options": ["13", "26", "40", "80 cm²"], "answer": 2, "explanation": "क्षेत्रफल = लंबाई × चौड़ाई = 8×5 = 40 सेमी².", "level": "Easy"}, {"en": "Circumference of circle radius 7 cm (π=22/7)?", "hi": "7 सेमी त्रिज्या वाले वृत्त की परिधि (π=22/7)?", "options": ["22", "44", "49", "154 cm"], "answer": 1, "explanation": "परिधि = 2πr = 2×22/7×7 = 44 सेमी.", "level": "Easy"}, {"en": "Volume of cube side 4 cm?", "hi": "4 सेमी भुजा वाले घन का आयतन?", "options": ["16", "32", "48", "64 cm³"], "answer": 3, "explanation": "आयतन = भुजा³ = 4³ = 64 सेमी³.", "level": "Medium"}], "Algebra": [{"en": "Solve x + 7 = 12.", "hi": "x + 7 = 12 हल करें।", "options": ["3", "4", "5", "6"], "answer": 2, "explanation": "x = 12−7 = 5.", "level": "Easy"}, {"en": "If x=3, find 2x² + 1.", "hi": "यदि x=3, तो 2x² + 1 ज्ञात करें।", "options": ["13", "17", "19", "21"], "answer": 2, "explanation": "2×3²+1 = 18+1 = 19.", "level": "Easy"}, {"en": "Factorise x² − 9.", "hi": "x² − 9 का गुणनखंड कीजिए।", "options": ["(x−9)(x+1)", "(x−3)(x+3)", "(x−3)²", "(x+9)(x−1)"], "answer": 1, "explanation": "यह वर्गों का अंतर है: x²−3² = (x−3)(x+3).", "level": "Medium"}], "Geometry": [{"en": "Sum of angles in a triangle?", "hi": "त्रिभुज के कोणों का योग कितना होता है?", "options": ["90°", "180°", "270°", "360°"], "answer": 1, "explanation": "किसी भी त्रिभुज के आंतरिक कोणों का योग 180° होता है.", "level": "Easy"}, {"en": "Each angle of an equilateral triangle?", "hi": "समबाहु त्रिभुज का प्रत्येक कोण कितना होता है?", "options": ["45°", "60°", "90°", "120°"], "answer": 1, "explanation": "तीनों कोण बराबर और योग 180°; प्रत्येक = 60°.", "level": "Easy"}, {"en": "An exterior angle equals sum of which angles?", "hi": "त्रिभुज का बाह्य कोण किन कोणों के योग के बराबर होता है?", "options": ["Adjacent interior angles", "Two opposite interior angles", "All three angles", "None"], "answer": 1, "explanation": "बाह्य कोण = दो सम्मुख आंतरिक कोणों का योग.", "level": "Medium"}], "Trigonometry": [{"en": "sin 30° equals?", "hi": "sin 30° का मान?", "options": ["0", "1/2", "√3/2", "1"], "answer": 1, "explanation": "मानक त्रिकोणमितीय मान: sin 30° = 1/2.", "level": "Easy"}, {"en": "tan 45° equals?", "hi": "tan 45° का मान?", "options": ["0", "1/2", "1", "√3"], "answer": 2, "explanation": "tan 45° = sin45°/cos45° = 1.", "level": "Easy"}, {"en": "If sin θ = 3/5 for acute θ, cos θ?", "hi": "न्यूनकोण θ के लिए sin θ = 3/5 है, cos θ?", "options": ["2/5", "3/4", "4/5", "5/4"], "answer": 2, "explanation": "समकोण त्रिभुज में लंब 3, कर्ण 5; आधार 4; cos θ = 4/5.", "level": "Medium"}], "Data Interpretation": [{"en": "Sales are 10, 20, 30. Total?", "hi": "बिक्री 10, 20, 30 है। कुल बिक्री?", "options": ["50", "55", "60", "65"], "answer": 2, "explanation": "योग = 10+20+30 = 60.", "level": "Easy"}, {"en": "A class has 40 students; 25% are girls. Number of girls?", "hi": "कक्षा में 40 विद्यार्थी हैं; 25% लड़कियाँ हैं। लड़कियों की संख्या?", "options": ["8", "10", "12", "15"], "answer": 1, "explanation": "40×25/100 = 10 लड़कियाँ.", "level": "Easy"}, {"en": "Values 12, 18, 30: first value is what % of total?", "hi": "12, 18, 30 में पहली संख्या कुल का कितने प्रतिशत है?", "options": ["15%", "20%", "25%", "30%"], "answer": 1, "explanation": "कुल = 60; 12/60×100 = 20%.", "level": "Medium"}]};
+const meta = [{"en": "Simplification", "hi": "सरलीकरण", "icon": "➗"}, {"en": "BODMAS", "hi": "बोडमास", "icon": "🧮"}, {"en": "Number System", "hi": "संख्या पद्धति", "icon": "🔢"}, {"en": "HCF & LCM", "hi": "महत्तम समापवर्तक और लघुत्तम समापवर्त्य", "icon": "🧩"}, {"en": "Percentage", "hi": "प्रतिशत", "icon": "％"}, {"en": "Ratio & Proportion", "hi": "अनुपात और समानुपात", "icon": "⚖️"}, {"en": "Average", "hi": "औसत", "icon": "📊"}, {"en": "Profit & Loss", "hi": "लाभ और हानि", "icon": "💰"}, {"en": "Discount", "hi": "छूट", "icon": "🏷️"}, {"en": "Simple Interest", "hi": "साधारण ब्याज", "icon": "🏦"}, {"en": "Compound Interest", "hi": "चक्रवृद्धि ब्याज", "icon": "📈"}, {"en": "Time & Work", "hi": "समय और कार्य", "icon": "⏱️"}, {"en": "Pipes & Cisterns", "hi": "नल और टंकी", "icon": "🚰"}, {"en": "Time-Speed-Distance", "hi": "समय, चाल और दूरी", "icon": "🚗"}, {"en": "Trains", "hi": "रेलगाड़ी", "icon": "🚆"}, {"en": "Boats & Streams", "hi": "नाव और धारा", "icon": "🛶"}, {"en": "Partnership", "hi": "साझेदारी", "icon": "🤝"}, {"en": "Mixture & Alligation", "hi": "मिश्रण और आरोपण", "icon": "🧪"}, {"en": "Age Problems", "hi": "आयु संबंधी प्रश्न", "icon": "🎂"}, {"en": "Mensuration 2D/3D", "hi": "क्षेत्रमिति 2D/3D", "icon": "📐"}, {"en": "Algebra", "hi": "बीजगणित", "icon": "x²"}, {"en": "Geometry", "hi": "ज्यामिति", "icon": "📏"}, {"en": "Trigonometry", "hi": "त्रिकोणमिति", "icon": "📐"}, {"en": "Data Interpretation", "hi": "आँकड़ों की व्याख्या", "icon": "📊"}];
 const $=id=>document.getElementById(id);
-function t(hi,en){return lang==="hi"?hi:en}
-function renderHome(){
-  $("home").classList.remove("hidden");$("test").classList.add("hidden");$("result").classList.add("hidden");
-  $("welcome").textContent=t("आज की तैयारी शुरू करें","Start today's practice");
-  $("dailyTitle").textContent=t("आज का अभ्यास","Today's practice");
-  $("dailyText").textContent=t("विषय चुनें और छोटा टेस्ट दें। हर उत्तर के बाद explanation मिलेगा।","Choose a subject and take a short test. Get an explanation after each answer.");
-  $("chooseTitle").textContent=t("विषय चुनें / Choose a subject","Choose a subject");
-  $("historyTitle").textContent=t("हाल के टेस्ट","Recent tests");
-  const history=JSON.parse(localStorage.getItem("eg_history")||"[]");
-  $("attempts").textContent=t("टेस्ट पूरे: ","Tests completed: ")+history.length;
-  $("best").textContent=t("सर्वश्रेष्ठ स्कोर: ","Best score: ")+(history.length?Math.max(...history.map(x=>x.pct)):"0")+"%";
-  $("subjects").innerHTML=keys.map((k,i)=>`<button class="card subject" data-sub="${k}"><span class="icon">${icons[i]}</span><strong>${names[lang][i]}</strong><span class="muted">${desc[lang][i]}</span><p class="muted">5 ${t("प्रश्न","questions")} · ${t("शुरू करें","Start")} →</p></button>`).join("");
-  document.querySelectorAll("[data-sub]").forEach(b=>b.onclick=()=>start(b.dataset.sub));
-  $("history").innerHTML=history.length?history.slice(-5).reverse().map(x=>`<div style="padding:7px 0;border-bottom:1px solid #edf0f5">${x.name} — ${x.pct}%</div>`).join(""):t("अभी कोई टेस्ट नहीं हुआ।","No tests completed yet.");
-}
-function start(s){subject=s;idx=0;score=0;renderQuestion()}
-function renderQuestion(){
-  $("home").classList.add("hidden");$("result").classList.add("hidden");$("test").classList.remove("hidden");
-  const q=data[subject][idx];selected=-1;locked=false;
-  $("subjectLabel").textContent=subject+" · "+(idx+1)+"/5";
-  $("progress").textContent=(idx+1)+" / 5";
-  $("question").textContent=lang==="hi"?q[0]:q[1];
-  $("options").innerHTML=q[2].map((o,i)=>`<button class="option" data-opt="${i}">${"ABCD"[i]}. ${o}</button>`).join("");
-  document.querySelectorAll("[data-opt]").forEach(b=>b.onclick=()=>{if(locked)return;selected=+b.dataset.opt;document.querySelectorAll(".option").forEach(x=>x.classList.remove("selected"));b.classList.add("selected")});
-  $("explanation").classList.add("hidden");$("check").classList.remove("hidden");$("next").classList.add("hidden");
-  $("check").textContent=t("उत्तर जाँचें","Check answer");$("backText").textContent=t("वापस","Back");
-}
-$("check").onclick=()=>{
- if(selected<0){alert(t("पहले एक विकल्प चुनें।","Please select an option first."));return}
- locked=true;const q=data[subject][idx],correct=selected===q[3];if(correct)score++;
- document.querySelectorAll(".option").forEach((b,i)=>{if(i===q[3])b.classList.add("correct");else if(i===selected)b.classList.add("wrong")});
- $("explanation").classList.remove("hidden");
- $("explanation").innerHTML=`<strong>${correct?t("सही जवाब!","Correct answer!"):t("सही उत्तर:","Correct answer:")} ${q[2][q[3]]}</strong><p class="muted">${q[4]}</p>`;
- $("check").classList.add("hidden");$("next").classList.remove("hidden");$("next").textContent=idx===4?t("परिणाम देखें","See result"):t("अगला प्रश्न →","Next question →");
-};
-$("next").onclick=()=>{if(idx<4){idx++;renderQuestion()}else finish()};
-function finish(){
- const pct=Math.round(score/5*100),hist=JSON.parse(localStorage.getItem("eg_history")||"[]");
- hist.push({name:subject,pct,date:new Date().toLocaleDateString()});localStorage.setItem("eg_history",JSON.stringify(hist.slice(-30)));
- $("test").classList.add("hidden");$("result").classList.remove("hidden");
- $("resultTitle").textContent=t("टेस्ट पूरा हुआ!","Test completed!");
- $("resultScore").textContent=score+" / 5  ·  "+pct+"%";
- $("resultMessage").textContent=t("अच्छा प्रयास! नियमित अभ्यास करते रहें।","Good effort! Keep practising regularly.");
-}
-$("back").onclick=renderHome;$("again").onclick=renderHome;
-$("language").onchange=e=>{lang=e.target.value;renderHome()};
-if("serviceWorker"in navigator && location.protocol.startsWith("http"))navigator.serviceWorker.register("sw.js").catch(()=>{});
-renderHome();
-</script>
-</body></html>
+let lang="hi",topic="",idx=0,selected=-1,score=0,locked=false;
+const t=(hi,en)=>lang==="hi"?hi:en;
+function getHistory(){try{return JSON.parse(localStorage.getItem("eg_history")||"[]")}catch(e){return []}}
+function home(){ $("home").classList.remove("hidden");$("test").classList.add("hidden");$("result").classList.add("hidden");
+ const h=getHistory();$("attempts").textContent=t("टेस्ट पूरे: ","Tests completed: ")+h.length;
+ $("best").textContent=t("सर्वश्रेष्ठ स्कोर: ","Best score: ")+(h.length?Math.max(...h.map(x=>x.pct)):"0")+"%";
+ $("subjects").innerHTML=meta.map(m=>`<button class="card subject" data-topic="${m.en}"><span class="icon">${m.icon}</span><strong>${lang==="hi"?m.hi:m.en}</strong><span class="muted">${bank[m.en].length} ${t("प्रश्न","questions")} · ${t("शुरू करें","Start")} →</span></button>`).join("");
+ document.querySelectorAll("[data-topic]").forEach(b=>b.onclick=()=>start(b.dataset.topic));
+ $("history").innerHTML=h.length?h.slice(-5).reverse().map(x=>`<div style="padding:7px 0;border-bottom:1px solid #edf0f5">${x.name} — ${x.pct}%</div>`).join(""):t("अभी कोई टेस्ट नहीं हुआ।","No tests completed yet.");}
+function start(s){topic=s;idx=0;score=0;question()}
+function question(){ $("home").classList.add("hidden");$("result").classList.add("hidden");$("test").classList.remove("hidden");
+ const qs=bank[topic],q=qs[idx];selected=-1;locked=false;
+ $("subjectLabel").textContent=(lang==="hi"?meta.find(x=>x.en===topic).hi:topic)+" · "+(idx+1)+"/"+qs.length+" · "+t(q.level==="Easy"?"आसान":q.level==="Medium"?"मध्यम":"कठिन",q.level);
+ $("progress").textContent=(idx+1)+" / "+qs.length;$("question").textContent=lang==="hi"?q.hi:q.en;
+ $("options").innerHTML=q.options.map((o,i)=>`<button class="option" data-opt="${i}">${"ABCD"[i]}. ${o}</button>`).join("");
+ document.querySelectorAll("[data-opt]").forEach(b=>b.onclick=()=>{if(locked)return;selected=+b.dataset.opt;document.querySelectorAll(".option").forEach(x=>x.classList.remove("selected"));b.classList.add("selected")});
+ $("explanation").classList.add("hidden");$("check").classList.remove("hidden");$("next").classList.add("hidden");$("check").textContent=t("उत्तर जाँचें","Check answer");}
+$("check").onclick=()=>{if(selected<0){alert(t("पहले एक विकल्प चुनें।","Please select an option first."));return}
+ locked=true;const q=bank[topic][idx],correct=selected===q.answer;if(correct)score++;
+ document.querySelectorAll(".option").forEach((b,i)=>{if(i===q.answer)b.classList.add("correct");else if(i===selected)b.classList.add("wrong")});
+ $("explanation").classList.remove("hidden");$("explanation").innerHTML=`<strong>${correct?t("सही जवाब!","Correct answer!"):t("सही उत्तर:","Correct answer:")} ${q.options[q.answer]}</strong><p class="muted">${q.explanation}</p>`;
+ $("check").classList.add("hidden");$("next").classList.remove("hidden");$("next").textContent=idx===bank[topic].length-1?t("परिणाम देखें","See result"):t("अगला प्रश्न →","Next question →");};
+$("next").onclick=()=>{if(idx<bank[topic].length-1){idx++;question()}else finish()};
+function finish(){const total=bank[topic].length,pct=Math.round(score/total*100),h=getHistory();h.push({name:topic,pct,date:new Date().toLocaleDateString()});localStorage.setItem("eg_history",JSON.stringify(h.slice(-50)));
+ $("test").classList.add("hidden");$("result").classList.remove("hidden");$("resultScore").textContent=score+" / "+total+" · "+pct+"%";$("resultMessage").textContent=t("अच्छा प्रयास! नियमित अभ्यास करते रहें।","Good effort! Keep practising.");}
+$("back").onclick=home;$("again").onclick=home;$("language").onchange=e=>{lang=e.target.value;home()};home();
+</script></body></html>
