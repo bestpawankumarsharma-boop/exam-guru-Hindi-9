@@ -1,0 +1,1 @@
+Exam Guru Hindi: 24 Maths topics, 300 original practice questions per topic (7,200 total). Topic select karte hi saare questions ek page par aate hain; Easy, Medium, Hard filters and show/hide all answers. Replace your repository's index.html after taking a backup. These are generated original practice questions, not copied from a book.
